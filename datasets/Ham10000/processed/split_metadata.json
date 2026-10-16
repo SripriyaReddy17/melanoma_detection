@@ -1,0 +1,155 @@
+{
+  "created_at_utc": "2026-10-06T17:56:07.414165+00:00",
+  "image_directory": "data/HAM10000/images",
+  "label_definition": {
+    "column": "diagnosis_2",
+    "melanoma": {
+      "label": 1,
+      "label_name": "mel",
+      "value": "Malignant melanocytic proliferations (Melanoma)"
+    },
+    "non_melanoma_label": 0,
+    "non_melanoma_label_name": "non_mel",
+    "non_melanoma_values": [
+      "Benign epidermal proliferations",
+      "Benign melanocytic proliferations",
+      "Benign soft tissue proliferations - Fibro-histiocytic",
+      "Benign soft tissue proliferations - Vascular",
+      "Malignant adnexal epithelial proliferations - Follicular",
+      "Malignant epidermal proliferations"
+    ],
+    "unknown_excluded_values": {
+      "Indeterminate epidermal proliferations": 149
+    },
+    "unrecognized_values_are_excluded": true
+  },
+  "manifest_sha256": {
+    "train": "ee33f7f7eb851a125c88f4f94045349a449ed408c8664d2624228e5f63841a9b",
+    "validation": "4449fcc270cb19f9cead3bd01434bf0336e26c034a35ac90bee60a4f4dcc9c77",
+    "test": "f5f84ce52583918ba647cc227ab2c799011cc1062777c892cedbd364e54bb1fa"
+  },
+  "random_seed": 42,
+  "ratios_requested_by_lesion": {
+    "test": 0.15,
+    "train": 0.7,
+    "validation": 0.15
+  },
+  "source_counts": {
+    "duplicate_image_id_rows": 0,
+    "duplicate_lesion_groups": 2221,
+    "duplicate_lesion_rows": 5103,
+    "lesions_melanoma": 734,
+    "lesions_non_melanoma": 8005,
+    "lesions_with_unknown_diagnosis": 99,
+    "rows_melanoma": 1305,
+    "rows_non_melanoma": 10266,
+    "rows_total": 11720,
+    "rows_unknown_excluded": 149,
+    "unknown_rows_by_diagnosis": {
+      "Indeterminate epidermal proliferations": 149
+    }
+  },
+  "source_metadata_filename": "data/HAM10000/ham10000_metadata_2026-09-21.csv",
+  "source_metadata_sha256": "d836a9fefa617204aae502d50b55299edfbfe1cb690a4b1a6c7e50803783229f",
+  "split_method": "Two-stage stratified random split of unique lesion_id groups; all images from a lesion are assigned to one split.",
+  "splits": {
+    "test": {
+      "class_counts": {
+        "mel": 203,
+        "non_mel": 1530
+      },
+      "class_lesion_counts": {
+        "mel": 110,
+        "non_mel": 1201
+      },
+      "image_count": 1733,
+      "lesion_count": 1311
+    },
+    "train": {
+      "class_counts": {
+        "mel": 924,
+        "non_mel": 7186
+      },
+      "class_lesion_counts": {
+        "mel": 514,
+        "non_mel": 5603
+      },
+      "image_count": 8110,
+      "lesion_count": 6117
+    },
+    "validation": {
+      "class_counts": {
+        "mel": 178,
+        "non_mel": 1550
+      },
+      "class_lesion_counts": {
+        "mel": 110,
+        "non_mel": 1201
+      },
+      "image_count": 1728,
+      "lesion_count": 1311
+    }
+  },
+  "test_manifest_sha256": "f5f84ce52583918ba647cc227ab2c799011cc1062777c892cedbd364e54bb1fa",
+  "test_set_usage_policy": "Held out by this preprocessing script; do not use for training, threshold selection, hyperparameter selection, or checkpoint selection.",
+  "validation_checks": {
+    "both_classes_in_each_split": {
+      "labels_by_split": {
+        "test": [
+          0,
+          1
+        ],
+        "train": [
+          0,
+          1
+        ],
+        "validation": [
+          0,
+          1
+        ]
+      },
+      "passed": true
+    },
+    "identical_image_content_disjoint": {
+      "method": "SHA-256 comparison across all included image files",
+      "overlap_counts": {
+        "train_test": 0,
+        "train_validation": 0,
+        "validation_test": 0
+      },
+      "passed": true
+    },
+    "image_ids_disjoint": {
+      "overlap_counts": {
+        "train_test": 0,
+        "train_validation": 0,
+        "validation_test": 0
+      },
+      "passed": true
+    },
+    "image_paths_exist": {
+      "missing_count": 0,
+      "passed": true
+    },
+    "lesion_ids_disjoint": {
+      "overlap_counts": {
+        "train_test": 0,
+        "train_validation": 0,
+        "validation_test": 0
+      },
+      "passed": true
+    },
+    "lesion_labels_consistent": {
+      "inconsistent_lesion_count": 0,
+      "passed": true
+    },
+    "source_image_ids_unique": {
+      "duplicate_rows": 0,
+      "passed": true
+    },
+    "test_set_held_out": {
+      "passed": true,
+      "policy": "This preparation script assigns the test split only; it does not train a model, tune a threshold, select a checkpoint, or inspect model performance."
+    }
+  }
+}

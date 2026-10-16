@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Secrets
+
+.env
+.env.*
+!.env.example
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated files
+outputs/
+temp/
+*.log
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Historical SAM2 component
+sam2/
+
+# Large ViT checkpoints and experiment archive
+models/classification/vit_model/
+models/classification/vit_model_experiment/
+models/classification/vit_model_experiment.zip

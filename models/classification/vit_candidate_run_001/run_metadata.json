@@ -1,0 +1,71 @@
+{
+  "backbone": "google/vit-base-patch16-224",
+  "batch_size": 8,
+  "best_checkpoint": null,
+  "created_at_utc": "2026-10-06T18:25:05.075170+00:00",
+  "decision_threshold": "argmax (equivalent to 0.5 for two classes)",
+  "epochs": 5,
+  "experiment_id": "20261006T182505Z-78f096f8",
+  "freeze_backbone": true,
+  "history": [],
+  "image_id_overlap_counts": {
+    "train_test": 0,
+    "train_validation": 0,
+    "validation_test": 0
+  },
+  "label_definition": {
+    "column": "diagnosis_2",
+    "melanoma": {
+      "label": 1,
+      "label_name": "mel",
+      "value": "Malignant melanocytic proliferations (Melanoma)"
+    },
+    "non_melanoma_label": 0,
+    "non_melanoma_label_name": "non_mel",
+    "non_melanoma_values": [
+      "Benign epidermal proliferations",
+      "Benign melanocytic proliferations",
+      "Benign soft tissue proliferations - Fibro-histiocytic",
+      "Benign soft tissue proliferations - Vascular",
+      "Malignant adnexal epithelial proliferations - Follicular",
+      "Malignant epidermal proliferations"
+    ],
+    "unknown_excluded_values": {
+      "Indeterminate epidermal proliferations": 149
+    },
+    "unrecognized_values_are_excluded": true
+  },
+  "learning_rate": 1e-05,
+  "lesion_overlap_counts": {
+    "train_test": 0,
+    "train_validation": 0,
+    "validation_test": 0
+  },
+  "live_checkpoint_sha256_before_training": "3bbaa2be86f6105024037081cfc4d59f27687c1c86c41207c4d922abda865553",
+  "loss": {
+    "class_weights": [
+      1.0,
+      7.7770562171936035
+    ],
+    "name": "weighted_cross_entropy"
+  },
+  "manifest_sha256": {
+    "test": "f5f84ce52583918ba647cc227ab2c799011cc1062777c892cedbd364e54bb1fa",
+    "train": "ee33f7f7eb851a125c88f4f94045349a449ed408c8664d2624228e5f63841a9b",
+    "validation": "4449fcc270cb19f9cead3bd01434bf0336e26c034a35ac90bee60a4f4dcc9c77"
+  },
+  "max_steps_per_epoch": 0,
+  "model_name": "ViT-Melanoma",
+  "model_selection_metric": "validation_pr_auc",
+  "optimizer": "AdamW",
+  "sampler": {
+    "name": "ordinary_shuffle",
+    "weighted_random_sampler": false
+  },
+  "scheduler": null,
+  "seed": 42,
+  "source_metadata_filename": "data/HAM10000/ham10000_metadata_2026-09-21.csv",
+  "source_metadata_sha256": "d836a9fefa617204aae502d50b55299edfbfe1cb690a4b1a6c7e50803783229f",
+  "validation_checks_passed": true,
+  "weight_decay": 0.0001
+}

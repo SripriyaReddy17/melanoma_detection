@@ -1,0 +1,34 @@
+# ============================================================
+# CEFM RAG CONFIGURATION
+# ============================================================
+
+embedding:
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  dimension: 384
+  normalize_embeddings: true
+
+retrieval:
+  top_k_initial: 10
+  top_k_reranked: 4
+  min_similarity_threshold: 0.25
+
+database:
+  mongodb_url: "mongodb://localhost:27017"
+  database_name: "cefm_melanoma"
+  collections:
+    documents: "rag_documents"
+    chunks: "rag_chunks"
+    retrieval_logs: "retrieval_logs"
+
+knowledge_base:
+  topics:
+    - "melanoma_overview"
+    - "benign_lesions"
+    - "asymmetry_criteria"
+    - "border_irregularity"
+    - "color_variation"
+    - "diameter_calibration"
+    - "evolution_tracking"
+    - "dermoscopy_structures"
+    - "clinical_safety_and_disclaimer"
+    - "model_limitations"

@@ -1,0 +1,21 @@
+{
+  "evaluation_status": "historical_not_current",
+  "note": "Historical evaluation artifact; final ViT test evaluation is pending.",
+  "model": "ViT-Melanoma",
+  "backbone": "google/vit-base-patch16-224",
+  "dataset": "HAM10000",
+  "test_samples": 1516,
+  "non_melanoma_samples": 1371,
+  "melanoma_samples": 145,
+  "accuracy": 0.6160949868073878,
+  "balanced_accuracy": 0.5503106214945044,
+  "precision": 0.11867364746945899,
+  "sensitivity_recall": 0.4689655172413793,
+  "specificity": 0.6316557257476295,
+  "f1": 0.1894150417827298,
+  "roc_auc": 0.5992504841671069,
+  "true_negative": 866,
+  "false_positive": 505,
+  "false_negative": 77,
+  "true_positive": 68
+}

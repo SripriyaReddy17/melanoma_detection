@@ -1,0 +1,38 @@
+# ============================================================
+# CEFM AGENTIC RAG & REPORT GENERATION CONFIGURATION
+# ============================================================
+
+llm:
+  provider: "deepseek"
+  model: "deepseek-chat"
+  temperature: 0.1
+  max_tokens: 1500
+  timeout_seconds: 30
+  fallback_to_template: true
+
+feature_agents:
+  a_agent:
+    name: "Asymmetry Specialist"
+    focus: "Geometric symmetry, reflection mismatch, principal axis balance"
+  b_agent:
+    name: "Border Irregularity Specialist"
+    focus: "Contour irregularity, compactness, curvature variation"
+  c_agent:
+    name: "Color Variation Specialist"
+    focus: "HSV channels standard deviations, color diversity, dark/variegated pigment"
+  d_agent:
+    name: "Diameter & Calibration Specialist"
+    focus: "Physical caliper measurements in mm, pixels-per-mm validation, 6mm threshold"
+  e_agent:
+    name: "Evolution & Temporal Specialist"
+    focus: "Temporal lesion change across registered visits"
+
+fact_checker:
+  strict_validation: true
+  reject_unsupported_claims: true
+  max_allowed_delta_deviation: 0.001
+  validate_citations: true
+
+medical_safety:
+  mandatory_disclaimer: "This system is an AI-assisted research prototype and is not a substitute for professional medical diagnosis."
+  forbid_direct_diagnosis: true

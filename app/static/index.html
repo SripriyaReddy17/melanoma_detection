@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEFM — Melanoma Assessment</title>
+<style>
+  :root {
+    --bg: #0f1420; --card: #1a2233; --card2: #212b40; --border: #2e3a55;
+    --text: #e8edf7; --muted: #93a1bd; --accent: #4f8cff; --green: #34c98e;
+    --yellow: #f5b942; --red: #ff5d6c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+  body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header { padding: 20px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
+  header .logo { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), #9b59f6); display:flex; align-items:center; justify-content:center; font-size: 20px; }
+  header h1 { font-size: 19px; font-weight: 600; }
+  header span { color: var(--muted); font-size: 13px; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 24px 60px; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 22px; }
+  .tab { padding: 9px 18px; border-radius: 999px; background: var(--card); border: 1px solid var(--border); color: var(--muted); cursor: pointer; font-size: 14px; }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* Upload card */
+  .dropzone { border: 2px dashed var(--border); border-radius: 16px; background: var(--card);
+    padding: 48px 24px; text-align: center; cursor: pointer; transition: all .15s; }
+  .dropzone:hover, .dropzone.drag { border-color: var(--accent); background: var(--card2); }
+  .dropzone .icon { font-size: 44px; margin-bottom: 12px; }
+  .dropzone h2 { font-size: 17px; margin-bottom: 6px; }
+  .dropzone p { color: var(--muted); font-size: 13px; }
+  .preview-wrap { display:none; margin-top: 18px; text-align:center; }
+  .preview-wrap img { max-height: 260px; border-radius: 12px; border: 1px solid var(--border); }
+
+  .options { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  .options input { flex: 1; min-width: 220px; background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 11px 14px; border-radius: 10px; font-size: 14px; outline: none; }
+  .options input:focus { border-color: var(--accent); }
+
+  .btn { background: var(--accent); color: #fff; border: none; padding: 13px 30px; border-radius: 10px;
+    font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 18px; width: 100%; transition: opacity .15s; }
+  .btn:hover { opacity: .88; }
+  .btn:disabled { opacity: .5; cursor: wait; }
+
+  .spinner { display:none; margin-top: 14px; color: var(--muted); font-size: 14px; text-align:center; }
+  .spinner::after { content:''; display:inline-block; width:14px; height:14px; margin-left:8px;
+    border:2px solid var(--border); border-top-color: var(--accent); border-radius:50%;
+    animation: spin .7s linear infinite; vertical-align:-2px; }
+  @keyframes spin { to { transform: rotate(360deg);} }
+
+  /* Results */
+  #results { display: none; margin-top: 26px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+  .card h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 12px; }
+
+  .risk-badge { display:inline-block; padding: 6px 16px; border-radius: 999px; font-weight: 700; font-size: 15px; }
+  .risk-low { background: rgba(52,201,142,.15); color: var(--green); }
+  .risk-medium { background: rgba(245,185,66,.15); color: var(--yellow); }
+  .risk-high { background: rgba(255,93,108,.15); color: var(--red); }
+  .big-pct { font-size: 34px; font-weight: 700; margin: 8px 0 2px; }
+
+  .bar-row { margin-bottom: 12px; }
+  .bar-label { display:flex; justify-content:space-between; font-size: 13px; color: var(--muted); margin-bottom: 5px; }
+  .bar-label b { color: var(--text); }
+  .bar { height: 8px; background: var(--card2); border-radius: 99px; overflow: hidden; }
+  .bar > div { height: 100%; background: linear-gradient(90deg, var(--accent), #9b59f6); border-radius: 99px; transition: width .6s ease; }
+
+  .evolution-box { font-size: 14px; line-height: 1.6; }
+  .evolution-box .tag { display:inline-block; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight:600; margin-bottom: 8px;}
+  .tag.new { background: rgba(79,140,255,.15); color: var(--accent); }
+  .tag.changed { background: rgba(245,185,66,.15); color: var(--yellow); }
+  .tag.stable { background: rgba(52,201,142,.15); color: var(--green); }
+
+  .explain { font-size: 14px; line-height: 1.7; color: var(--text); }
+  .disclaimer { margin-top: 20px; font-size: 12px; color: var(--muted); text-align:center; }
+
+  /* History table */
+  #historySection { display:none; margin-top: 26px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 14px; overflow:hidden; }
+  th, td { padding: 12px 14px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing:.06em; }
+  tr:hover td { background: var(--card2); cursor: pointer; }
+  .thumb { width: 46px; height: 46px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
+  .pill { padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🔬</div>
+  <div>
+    <h1>CEFM — Melanoma Assessment</h1>
+    <span>Cross-modal Explainable Framework · ABCDE analysis with evolution tracking</span>
+  </div>
+</header>
+
+<main>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('analyze', this)">🔍 Analyze Image</button>
+    <button class="tab" onclick="showTab('history', this)">🗂 History</button>
+  </div>
+
+  <!-- ============ ANALYZE TAB ============ -->
+  <section id="analyzeTab">
+    <div class="dropzone" id="dropzone">
+      <div class="icon">📸</div>
+      <h2>Drop a skin lesion image here</h2>
+      <p>or click to browse — JPG / PNG supported</p>
+      <input type="file" id="fileInput" accept=".jpg,.jpeg,.png" hidden>
+      <div class="preview-wrap" id="previewWrap">
+        <img id="preview" alt="preview">
+        <p style="color:var(--muted);font-size:13px;margin-top:8px" id="fileName"></p>
+      </div>
+    </div>
+
+    <div class="options">
+      <input type="text" id="caseLabel" placeholder="Case label (optional) — e.g. 'Left arm mole'">
+      <input type="text" id="caseId" placeholder="Existing Case ID (optional) — enables Evolution tracking">
+      <input type="number" id="pixelsPerMm" step="any" min="0" placeholder="Pixels per mm (optional) — converts diameter to mm">
+    </div>
+
+    <button class="btn" id="analyzeBtn" onclick="analyze()">Analyze Image</button>
+    <div class="spinner" id="spinner">Running full pipeline: validation → segmentation → ABCDE → classification → evolution…</div>
+
+    <div id="results"></div>
+  </section>
+
+  <!-- ============ HISTORY TAB ============ -->
+  <section id="historySection">
+    <div class="card">
+      <h3>Recent Analyses (stored in database)</h3>
+      <table>
+        <thead><tr><th></th><th>Date</th><th>File</th><th>Risk</th><th>Melanoma %</th><th>Diameter (px)</th><th>Case</th></tr></thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="disclaimer">⚠️ Research prototype only — not a medical diagnosis. Always consult a qualified dermatologist.</p>
+</main>
+
+<script>
+const API = '/api/v1';
+let selectedFile = null;
+
+// ---------- Tabs ----------
+function showTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('analyzeTab').style.display = name === 'analyze' ? '' : 'none';
+  document.getElementById('historySection').style.display = name === 'history' ? '' : 'none';
+  if (name === 'history') loadHistory();
+}
+
+// ---------- Dropzone ----------
+const dz = document.getElementById('dropzone');
+dz.onclick = () => document.getElementById('fileInput').click();
+document.getElementById('fileInput').onchange = e => setFile(e.target.files[0]);
+dz.ondragover = e => { e.preventDefault(); dz.classList.add('drag'); };
+dz.ondragleave = () => dz.classList.remove('drag');
+dz.ondrop = e => { e.preventDefault(); dz.classList.remove('drag'); setFile(e.dataTransfer.files[0]); };
+
+function setFile(f) {
+  if (!f) return;
+  selectedFile = f;
+  const url = URL.createObjectURL(f);
+  document.getElementById('preview').src = url;
+  document.getElementById('fileName').textContent = f.name;
+  document.getElementById('previewWrap').style.display = 'block';
+}
+
+// ---------- Analyze ----------
+async function analyze() {
+  if (!selectedFile) { alert('Please choose an image first.'); return; }
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true;
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+
+  const fd = new FormData();
+  fd.append('image', selectedFile);
+  const label = document.getElementById('caseLabel').value.trim();
+  const caseId = document.getElementById('caseId').value.trim();
+  if (label) fd.append('case_label', label);
+  if (caseId) fd.append('case_id', caseId);
+  const ppm = parseFloat(document.getElementById('pixelsPerMm').value);
+  if (!isNaN(ppm) && ppm > 0) fd.append('pixels_per_mm', ppm);
+
+  try {
+    const res = await fetch(API + '/analyze', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail?.message || data.detail || 'Analysis failed');
+    renderResults(data);
+  } catch (err) {
+    alert('Error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    document.getElementById('spinner').style.display = 'none';
+  }
+}
+
+function riskClass(level) { return 'risk-' + (level || 'low'); }
+
+function bar(label, value, max, fmt = v => v.toFixed(2)) {
+  const pct = Math.min(100, (value / max) * 100).toFixed(1);
+  return `<div class="bar-row">
+    <div class="bar-label"><span>${label}</span><b>${fmt(value)}</b></div>
+    <div class="bar"><div style="width:${pct}%"></div></div>
+  </div>`;
+}
+
+function renderResults(d) {
+  const c = d.classification || {};
+  const a = d.abcde || {};
+  const evo = d.evolution || { available: false, change_detected: false, changes: {} };
+  const cal = d.calibration || {}; 
+  
+
+  const calHtml = cal && cal.pixels_per_mm
+    ? `<span class="tag stable">CALIBRATED</span> ${cal.message} Scale: <b>${cal.pixels_per_mm} px/mm</b>`
+    : `<span class="tag new">NO SCALE</span> ${cal ? cal.message : ''} Place a coin or a 10 mm calibration sticker next to the lesion to get the diameter in mm.`;
+
+  let evoHtml;
+  if (!evo || !evo.available) {
+    evoHtml = `<span class="tag new">FIRST VISIT</span><br>No previous image for this case yet.
+      Upload a follow-up photo of the same lesion using the same Case ID to enable evolution tracking.`;
+  } else if (evo.change_detected) {
+    const rows = Object.entries(evo.changes).map(([k, v]) =>
+      `<li>${k}: ${(+v.previous).toFixed(2)} → ${(+v.current).toFixed(2)} (Δ ${(+v.absolute_change).toFixed(2)})</li>`).join('');
+    evoHtml = `<span class="tag changed">CHANGES DETECTED</span><ul style="margin:6px 0 0 18px">${rows}</ul>`;
+  } else {
+    evoHtml = `<span class="tag stable">STABLE</span><br>No significant change compared to the previous visit.`;
+  }
+
+  document.getElementById('results').innerHTML = `
+    <div class="grid">
+      <div class="card" style="text-align:center">
+        <h3>Melanoma Risk</h3>
+        <span class="risk-badge ${riskClass(c.risk_level)}">${(c.risk_level||'').toUpperCase()}</span>
+        <div class="big-pct">${(c.melanoma_probability*100).toFixed(1)}%</div>
+        <p style="color:var(--muted);font-size:12px">Predicted class: <b style="color:var(--text)">${c.predicted_class}</b><br>
+        Method: ${c.method === 'trained_model' ? '🧠 Trained model' : '📐 ABCDE heuristic'}</p>
+      </div>
+
+      <div class="card">
+        <h3>ABCDE Features</h3>
+        ${bar('A — Asymmetry', a.asymmetry, 60)}
+        ${bar('B — Border irregularity', a.border_irregularity, 0.6)}
+        ${bar(
+  'C — Color variation',
+  Number.isFinite(Number(a.color_index))
+    ? Number(a.color_index)
+    : 0,
+  1,
+  v => v.toFixed(2)
+)}
+        ${bar('D — Diameter (pixels)', a.diameter_pixels, 500, v => v.toFixed(0))}
+        ${a.diameter_mm != null
+          ? `<div class="bar-row"><div class="bar-label"><span>D — Diameter (mm)</span><b>${a.diameter_mm.toFixed(2)} mm${a.diameter.exceeds_6mm ? ' ⚠️ >6 mm' : ''}</b></div><div class="bar"><div style="width:${Math.min(100, a.diameter_mm / 20 * 100).toFixed(1)}%"></div></div></div>`
+          : ''}
+      </div>
+
+      <div class="card">
+        <h3>E — Evolution</h3>
+        <div class="evolution-box">${evoHtml}</div>
+      </div>
+
+      <div class="card">
+        <h3>Diameter Calibration</h3>
+        <div class="evolution-box">${calHtml}</div>
+      </div>
+
+      <div class="card" style="grid-column: 1 / -1">
+        <h3>Explanation</h3>
+        <div class="explain">${d.explanation.summary}</div>
+      </div>
+
+      <div class="card" style="grid-column: 1 / -1; text-align:center">
+        <h3>Analyzed Image</h3>
+        <img src="${d.image_url}" style="max-height:300px;border-radius:12px;border:1px solid var(--border)">
+        <p style="color:var(--muted);font-size:12px;margin-top:8px">
+          Saved to database · Analysis ID: <code>${d.analysis_id}</code> ·
+          Case ID: <code>${d.case_id}</code> (reuse it for follow-up uploads)</p>
+      </div>
+    </div>`;
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ---------- History ----------
+async function loadHistory() {
+  const res = await fetch(API + '/analyses?limit=50');
+  const rows = await res.json();
+  const body = document.getElementById('historyBody');
+  if (!rows.length) { body.innerHTML = '<tr><td colspan="7" style="color:var(--muted)">No analyses yet.</td></tr>'; return; }
+  body.innerHTML = rows.map(r => `
+    <tr onclick="openAnalysis('${r.analysis_id}')">
+      <td><img class="thumb" src="${r.image_url}"></td>
+      <td>${new Date(r.created_at).toLocaleString()}</td>
+      <td>${r.filename || '—'}</td>
+      <td><span class="pill risk-${r.risk_level}" style="background:rgba(255,255,255,.06)">${r.risk_level}</span></td>
+      <td>${(r.melanoma_probability*100).toFixed(1)}%</td>
+      <td>${r.diameter_pixels?.toFixed(0)}${r.diameter_mm != null ? ` (${r.diameter_mm.toFixed(1)} mm)` : ''}</td>
+      <td><code>${(r.case_id||'').slice(0,8)}</code></td>
+    </tr>`).join('');
+}
+
+async function openAnalysis(id) {
+  showTab('analyze', document.querySelector('.tab'));
+  const res = await fetch(`${API}/analyses/${id}`);
+  const a = await res.json();
+  renderResults({
+    classification: a.classification,
+    abcde: a.abcde,
+    evolution: a.evolution || { available: false },
+    explanation: { summary: a.report?.explanation?.summary || 'Stored analysis.' },
+    image_url: a.image_url,
+    analysis_id: a.analysis_id,
+    case_id: a.case_id,
+  });
+}
+</script>
+</body>
+</html>

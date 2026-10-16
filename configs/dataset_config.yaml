@@ -1,0 +1,45 @@
+# ============================================================
+# CEFM DATASET CONFIGURATION
+# Relative paths from project root
+# ============================================================
+
+seed: 42
+
+classification:
+  name: "HAM10000"
+  description: "Human Against Machine with 10000 training images"
+  root_dir: "data/HAM10000"
+  metadata_file: "data/HAM10000/ham10000_metadata_2026-09-21.csv"
+  processed_dir: "datasets/Ham10000/processed"
+  image_dirs:
+    - "data/HAM10000/images"
+  splits:
+    train_csv: "datasets/Ham10000/processed/train.csv"
+    val_csv: "datasets/Ham10000/processed/validation.csv"
+    test_csv: "datasets/Ham10000/processed/test.csv"
+  num_classes: 2
+  classes:
+    0: "non_mel"
+    1: "mel"
+  melanoma_class_name: "mel"
+  target_image_size: 224
+  leakage_prevention: "lesion_level_split"
+
+segmentation:
+  name: "ISIC2018"
+  description: "ISIC 2018 Task 1: Lesion Boundary Segmentation"
+  root_dir: "datasets/isic2018/data"
+  images_dir: "datasets/isic2018/data/images"
+  annotations_dir: "datasets/isic2018/data/annotations"
+  splits:
+    train:
+      images: "datasets/isic2018/data/images/train"
+      masks: "datasets/isic2018/data/annotations/train"
+    val:
+      images: "datasets/isic2018/data/images/val"
+      masks: "datasets/isic2018/data/annotations/val"
+    test:
+      images: "datasets/isic2018/data/images/test"
+      masks: "datasets/isic2018/data/annotations/test"
+  target_image_size: 256
+  target_mask_size: 256

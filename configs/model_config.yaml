@@ -1,0 +1,52 @@
+# ============================================================
+# CEFM MODEL CONFIGURATION
+# ============================================================
+
+device: "auto"  # 'auto', 'cuda', or 'cpu'
+
+classification:
+  model_name: "ViT-Melanoma"
+  model_version: "v2.0"
+  backbone: "google/vit-base-patch16-224"
+  model_path: "models/classification/vit_model_experiment"
+  image_size: 224
+  num_classes: 2
+  id2label:
+    0: "non_mel"
+    1: "mel"
+  label2id:
+    "non_mel": 0
+    "mel": 1
+  batch_size: 8
+  epochs: 5
+  seed: 42
+  learning_rate: 1.0e-5
+  weight_decay: 1.0e-4
+  freeze_backbone: true
+
+segmentation:
+  model_name: "UltraLight VM-UNet"
+  architecture: "UltraLight VM-UNet"
+  model_path: "models/segmentation/UltraLight_VM_UNet.pth"
+  in_channels: 3
+  out_channels: 1
+  image_size: 224
+
+contrastive:
+  model_name: "CEFM-Contrastive-Aligner"
+  model_version: "v1.0"
+  checkpoint_path: "models/contrastive/contrastive_projection.pt"
+  image_feature_dim: 768
+  clinical_feature_dim: 16
+  latent_dim: 128
+  temperature: 0.07
+  classification_weight: 1.0
+  contrastive_weight: 0.5
+  batch_size: 16
+  learning_rate: 1.0e-4
+
+clip:
+  model_name: "ViT-B-16"
+  pretrained: "openai"
+  model_dir: "models/clip"
+  enabled: true
